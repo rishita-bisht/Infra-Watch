@@ -6,9 +6,9 @@ CPU_USAGE=$(echo "100 - $CPU_IDLE" | bc)
 MEM_USAGE=$(free -m | awk '/Mem:/ {printf "%.2f", ($3/$2)*100}')
 DISK_USAGE=$(df -h / | tail -1 | awk '{print $5}' | sed 's/%//')
 
-CSV_FILE="../logs/metrics.csv"
+CSV_FILE="/home/huiii/infrawatch/logs/metrics.csv"
 
-mkdir -p ../logs
+mkdir -p /home/huiii/infrawatch/logs
 
 # Add header only once
 if [ ! -f "$CSV_FILE" ]; then
