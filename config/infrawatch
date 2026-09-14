@@ -1,0 +1,9 @@
+/home/huiii/infrawatch/logs/cron.log {
+      su huiii huiii
+      weekly
+      rotate 4
+      compress
+      missingok
+      notifempty
+      copytruncate
+}
