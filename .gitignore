@@ -1,2 +1,5 @@
 logs/*.csv
 logs/*.log
+reports/report.txt
+reports/report.html
+reports/metrics_graph.png
