@@ -5,3 +5,4 @@ reports/report.html
 reports/metrics_graph.png
 .env
 alerts/.env
+storage/metrics.db
