@@ -2,176 +2,162 @@
 
 A lightweight Linux infrastructure monitoring tool built with Bash.
 
-Infra-Watch collects essential system metrics from a Linux machine, stores them persistently, and automatically collects them on a scheduled interval.
+Infra-Watch collects essential system metrics from a Linux machine, making it easy to monitor resource utilization and build a foundation for alerting, automation, and system observability.
 
 ## Features
 
-- CPU utilization monitoring
-- Memory utilization monitoring
-- Disk utilization monitoring
-- Persistent CSV-based metric storage
-- Automatic metric collection using cron
-- Timestamped metric history
-- Load average monitoring
+- CPU utilization
+- Memory utilization
+- Disk utilization
+- System load average
 - Top 5 CPU-consuming processes
 - Network statistics
+- Persistent CSV-based metric storage
+- Automated metric collection using cron
+- Log rotation and compression
+- SQLite-based metric storage
+- Slack webhook alerting with cooldown
+- Automated report generation
+- Text reports
+- HTML reports
+- Graph-based metric visualization
 
 ## Project Structure
 
-```text
 Infra-Watch/
 ├── collectors/
 │   └── collector.sh
 ├── logs/
-│   ├── metrics.csv
-│   └── cron.log
+├── reports/
+├── config/
 ├── .gitignore
 ├── LICENSE
 └── README.md
-```
 
 ## Requirements
 
-- Linux
+- Linux (tested on Kali Linux)
 - Bash
-- `bc`
+- Python
+- SQLite
 - Standard Linux utilities:
-  - `top`
-  - `free`
-  - `df`
-  - `ps`
-  - `ss`
-  - `cron`
+  - top
+  - free
+  - df
+  - ps
+  - ss
+- cron
+- logrotate
 
 ## Getting Started
 
 Clone the repository:
 
-```bash
-git clone https://github.com/rishita-bisht/Infra-Watch.git
-cd Infra-Watch
-```
+    git clone https://github.com/rishita-bisht/Infra-Watch.git
+    cd Infra-Watch
 
-Make the collector executable:
+Make the script executable:
 
-```bash
-chmod +x collectors/collector.sh
-```
+    chmod +x collectors/collector.sh
 
-Run the collector manually:
+Run the collector:
 
-```bash
-./collectors/collector.sh
-```
+    ./collectors/collector.sh
 
 ## Metrics Collected
 
 | Metric | Source |
-|---|---|
-| CPU Usage | `top -bn1` |
-| Memory Usage | `free -m` |
-| Disk Usage | `df -h /` |
-| Load Average | `/proc/loadavg` |
-| Top CPU Processes | `ps` |
-| Network Statistics | `ss` |
+|---------|--------|
+| CPU Usage | top |
+| Memory Usage | free |
+| Disk Usage | df |
+| Load Average | /proc/loadavg |
+| Top Processes | ps |
+| Network Statistics | ss |
 
 ## Data Storage
 
-Collected metrics are stored in `logs/metrics.csv`.
+Infra-Watch supports persistent storage of collected metrics.
 
-Each execution appends a new timestamped row without overwriting previous data.
+Metrics are initially stored in CSV format and can also be stored in SQLite for structured querying and analysis.
 
-Example:
-
-```csv
-timestamp,cpu,mem,disk
-2026-09-09T00:14:01,4.3,70.68,52
-```
-
-The CSV header is created automatically when the file does not already exist.
+Each metric collection is timestamped, allowing historical system performance data to be retained and analyzed.
 
 ## Scheduling
 
-Infra-Watch uses cron to run the collector automatically every 2 minutes.
+Infra-Watch uses cron to automatically execute the collector at a scheduled interval instead of requiring manual execution.
 
-Example cron entry:
+## Log Rotation
 
-```cron
-*/2 * * * * /home/huiii/infrawatch/collectors/collector.sh >> /home/huiii/infrawatch/logs/cron.log 2>&1
-```
+Log files are managed using Linux logrotate.
 
-This allows the system to collect metrics continuously without requiring manual execution.
+The configuration supports:
 
-## Lessons Learned
+- Weekly log rotation
+- Retention of previous logs
+- Compression
+- Handling of missing or empty logs
+- copytruncate for active log files
 
-### Relative Paths and Cron
+## Alerting
 
-The collector initially used relative paths such as:
+Infra-Watch supports threshold-based alerting through a Slack webhook.
 
-```text
-../logs/metrics.csv
-```
+Alerts can be triggered when monitored system metrics exceed configured thresholds.
 
-These worked when the script was executed manually from the `collectors` directory but failed when executed through cron.
+A cooldown mechanism prevents repeated alerts from being sent continuously while a condition remains active.
 
-Cron does not necessarily execute a script from the directory where the script is located.
+## Reports
 
-The collector was therefore updated to use absolute paths for its output files, ensuring consistent behavior regardless of how the script is executed.
+Infra-Watch generates reports from collected system metrics.
 
-## Current Status
+Supported report formats include:
 
-The monitoring pipeline currently supports:
+- Text reports
+- HTML reports
+- Graph-based visualizations
 
-- System metric collection
-- Persistent metric storage
-- Automated collection through cron
+These reports provide a historical view of system resource utilization.
 
 ## Roadmap
 
 - [x] System metrics collection
+- [x] Load average monitoring
+- [x] Process monitoring
+- [x] Network statistics
 - [x] Persistent CSV storage
-- [x] Automated collection with cron
-- [ ] Threshold-based alerting
-- [ ] Log rotation
+- [x] Automated metric collection with cron
+- [x] Log rotation
+- [x] SQLite storage
+- [x] Threshold-based alerting
+- [x] Slack webhook notifications
+- [x] Alert cooldown
+- [x] Automated report generation
+- [x] HTML reports
+- [x] Graph-based visualization
 - [ ] Service management with systemd
-- [ ] Historical data analysis
-- [ ] Dashboard and visualization
-- [ ] Docker deployment
+- [ ] Dashboard for visualization
+- [ ] Docker support
 
 ## Tech Stack
 
 - Bash
 - Linux
 - Cron
+- Logrotate
+- SQLite
+- Python
 - Git
+- Slack Webhooks
+
+## Contributing
+
+Contributions, suggestions, and improvements are welcome. Feel free to open an issue or submit a pull request.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## Author
 
 **Rishita Bisht**
-
-[GitHub](https://github.com/rishita-bisht)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
