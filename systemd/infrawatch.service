@@ -1,0 +1,6 @@
+[Unit]
+Description=InfraWatch metric collector
+
+[Service]
+Type=oneshot
+ExecStart=/home/huiii/infrawatch/collectors/collector.sh
