@@ -13,7 +13,7 @@ Infra-Watch collects essential system metrics from a Linux machine, making it ea
 - Top 5 CPU-consuming processes
 - Network statistics
 - Persistent CSV-based metric storage
-- Automated metric collection using cron
+- Automated metric collection
 - Log rotation and compression
 - SQLite-based metric storage
 - Slack webhook alerting with cooldown
@@ -21,18 +21,34 @@ Infra-Watch collects essential system metrics from a Linux machine, making it ea
 - Text reports
 - HTML reports
 - Graph-based metric visualization
+- systemd service and timer
+- Prometheus-based metrics collection
+- Node Exporter system metrics
+- Grafana dashboard visualization
 
 ## Project Structure
 
+```text
 Infra-Watch/
+├── alerts/
+│   └── alert_checker.py
 ├── collectors/
 │   └── collector.sh
+├── config/
+│   └── infrawatch
 ├── logs/
 ├── reports/
-├── config/
+│   └── report_generator.py
+├── storage/
+│   ├── init_db.py
+│   └── sync_to_db.py
+├── systemd/
+│   ├── infrawatch.service
+│   └── infrawatch.timer
 ├── .gitignore
 ├── LICENSE
 └── README.md
+```
 
 ## Requirements
 
@@ -40,14 +56,18 @@ Infra-Watch/
 - Bash
 - Python
 - SQLite
+- systemd
+- Prometheus
+- Node Exporter
+- Grafana
 - Standard Linux utilities:
   - top
   - free
   - df
   - ps
   - ss
-- cron
 - logrotate
+- Slack Webhook
 
 ## Getting Started
 
@@ -85,7 +105,9 @@ Each metric collection is timestamped, allowing historical system performance da
 
 ## Scheduling
 
-Infra-Watch uses cron to automatically execute the collector at a scheduled interval instead of requiring manual execution.
+Infra-Watch uses systemd service and timer units to execute the metric collector automatically.
+
+The systemd timer replaces the earlier cron-based scheduling approach and provides managed, persistent execution of the collector.
 
 ## Log Rotation
 
@@ -119,6 +141,42 @@ Supported report formats include:
 
 These reports provide a historical view of system resource utilization.
 
+## Monitoring Stack
+
+Infra-Watch can be integrated with a Prometheus and Grafana monitoring stack.
+
+Node Exporter exposes system-level metrics which are scraped by Prometheus.
+
+Grafana uses Prometheus as a data source to visualize system metrics through dashboards.
+
+The monitoring flow is:
+
+    Linux System
+         |
+         v
+    Node Exporter
+         |
+         v
+    Prometheus
+         |
+         v
+    Grafana Dashboard
+
+The dashboard provides visualization for metrics such as:
+
+- CPU usage
+- Memory usage
+- Disk usage
+
+## Service Management
+
+Infra-Watch includes systemd units for managed execution:
+
+    systemd/infrawatch.service
+    systemd/infrawatch.timer
+
+The service executes the collector while the timer controls its scheduled execution.
+
 ## Roadmap
 
 - [x] System metrics collection
@@ -126,7 +184,7 @@ These reports provide a historical view of system resource utilization.
 - [x] Process monitoring
 - [x] Network statistics
 - [x] Persistent CSV storage
-- [x] Automated metric collection with cron
+- [x] Automated metric collection
 - [x] Log rotation
 - [x] SQLite storage
 - [x] Threshold-based alerting
@@ -135,14 +193,20 @@ These reports provide a historical view of system resource utilization.
 - [x] Automated report generation
 - [x] HTML reports
 - [x] Graph-based visualization
-- [ ] Service management with systemd
-- [ ] Dashboard for visualization
+- [x] Service management with systemd
+- [x] Prometheus integration
+- [x] Node Exporter integration
+- [x] Grafana dashboard
 - [ ] Docker support
 
 ## Tech Stack
 
 - Bash
 - Linux
+- systemd
+- Prometheus
+- Node Exporter
+- Grafana
 - Cron
 - Logrotate
 - SQLite
